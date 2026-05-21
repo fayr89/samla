@@ -2,6 +2,15 @@ import siteData from '@/../data/site.json';
 
 export type TierKey = 't50' | 't200' | 't500' | 't1000';
 
+export const TIER_KEYS: TierKey[] = ['t50', 't200', 't500', 't1000'];
+
+const FALLBACK_TIER_MIN: Record<TierKey, number> = {
+  t50: 50,
+  t200: 200,
+  t500: 500,
+  t1000: 1000
+};
+
 export type ProductSize = {
   id: string;
   volumeL: number;
@@ -33,25 +42,25 @@ export const TIER_PRICES: Record<string, Record<TierKey, number>> = Object.fromE
   SIZES.map((s) => [s.id, s.tiers])
 );
 
-export const TIER_LABEL: Record<TierKey, {ru: string; kk: string}> = {
-  t50: {ru: 'от 50 шт', kk: '50 данадан'},
-  t200: {ru: 'от 200 шт', kk: '200 данадан'},
-  t500: {ru: 'от 500 шт', kk: '500 данадан'},
-  t1000: {ru: 'от 1000 шт', kk: '1000 данадан'}
-};
-
-export const TIER_MIN: Record<TierKey, number> = {
-  t50: 50,
-  t200: 200,
-  t500: 500,
-  t1000: 1000
-};
+export const TIER_MIN: Record<TierKey, number> = (() => {
+  const raw = (siteData as {tierMins?: Partial<Record<TierKey, number>>}).tierMins;
+  return {
+    t50: raw?.t50 ?? FALLBACK_TIER_MIN.t50,
+    t200: raw?.t200 ?? FALLBACK_TIER_MIN.t200,
+    t500: raw?.t500 ?? FALLBACK_TIER_MIN.t500,
+    t1000: raw?.t1000 ?? FALLBACK_TIER_MIN.t1000
+  };
+})();
 
 export function tierForQty(qty: number): TierKey {
   if (qty >= TIER_MIN.t1000) return 't1000';
   if (qty >= TIER_MIN.t500) return 't500';
   if (qty >= TIER_MIN.t200) return 't200';
   return 't50';
+}
+
+export function tierLabelRu(tier: TierKey): string {
+  return `от ${TIER_MIN[tier]} шт`;
 }
 
 export function formatRub(n: number): string {
