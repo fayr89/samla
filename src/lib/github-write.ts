@@ -64,6 +64,29 @@ async function getFileSha(
   }
 }
 
+/**
+ * Read a UTF-8 text file from the configured branch of the GitHub repo.
+ * Use this for data the admin edits (e.g. data/site.json) instead of the
+ * deployed serverless function's filesystem, which can lag behind the
+ * latest commit during a Vercel rebuild window — reading from disk in
+ * that window and writing back would silently overwrite recent saves.
+ */
+export async function fetchTextFile(filePath: string): Promise<string> {
+  const o = client();
+  const {owner, repo: r, branch} = repo();
+  const res = await o.repos.getContent({
+    owner,
+    repo: r,
+    path: filePath,
+    ref: branch
+  });
+  if (Array.isArray(res.data) || res.data.type !== 'file') {
+    throw new Error(`${filePath} не является файлом в ${owner}/${r}@${branch}`);
+  }
+  const b64 = res.data.content.replace(/\n/g, '');
+  return Buffer.from(b64, 'base64').toString('utf8');
+}
+
 /** Commit a UTF-8 text or binary file. `content` is a Buffer or string. */
 export async function commitFile(
   filePath: string,

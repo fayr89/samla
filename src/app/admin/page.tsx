@@ -1,7 +1,16 @@
 import Image from 'next/image';
 import {requireSession} from '@/lib/admin-auth';
 import {Input} from '@/components/ui/input';
-import {SIZES, CONTACTS, TIER_MIN, TIER_KEYS, tierLabelRu} from '@/lib/products';
+import {fetchTextFile} from '@/lib/github-write';
+import {
+  SIZES as BUNDLED_SIZES,
+  CONTACTS as BUNDLED_CONTACTS,
+  TIER_MIN as BUNDLED_TIER_MIN,
+  TIER_KEYS,
+  type ProductSize,
+  type Contacts,
+  type TierKey
+} from '@/lib/products';
 import {
   saveContacts,
   savePrices,
@@ -10,8 +19,49 @@ import {
 } from './actions';
 
 export const metadata = {title: 'Admin · Управление', robots: {index: false}};
+export const dynamic = 'force-dynamic';
 
 const TIERS = TIER_KEYS;
+
+type LiveSite = {
+  contacts: Contacts;
+  tierMins: Record<TierKey, number>;
+  products: ProductSize[];
+};
+
+async function loadLiveSite(): Promise<{data: LiveSite; stale: false} | {data: LiveSite; stale: true; reason: string}> {
+  try {
+    const text = await fetchTextFile('data/site.json');
+    const parsed = JSON.parse(text) as {
+      contacts: Contacts;
+      tierMins?: Partial<Record<TierKey, number>>;
+      products: ProductSize[];
+    };
+    return {
+      data: {
+        contacts: parsed.contacts,
+        tierMins: {
+          t50: parsed.tierMins?.t50 ?? BUNDLED_TIER_MIN.t50,
+          t200: parsed.tierMins?.t200 ?? BUNDLED_TIER_MIN.t200,
+          t500: parsed.tierMins?.t500 ?? BUNDLED_TIER_MIN.t500,
+          t1000: parsed.tierMins?.t1000 ?? BUNDLED_TIER_MIN.t1000
+        },
+        products: parsed.products
+      },
+      stale: false
+    };
+  } catch (e) {
+    return {
+      data: {
+        contacts: BUNDLED_CONTACTS,
+        tierMins: BUNDLED_TIER_MIN,
+        products: BUNDLED_SIZES
+      },
+      stale: true,
+      reason: e instanceof Error ? e.message : 'неизвестная ошибка'
+    };
+  }
+}
 
 const OK_LABEL: Record<string, string> = {
   contacts: 'Контакты сохранены. Vercel передеплоит за 1–2 мин.',
@@ -34,6 +84,9 @@ export default async function AdminPage({
 }) {
   const {email} = await requireSession();
   const sp = await searchParams;
+  const live = await loadLiveSite();
+  const {contacts, tierMins, products} = live.data;
+  const tierLabel = (t: TierKey) => `от ${tierMins[t]} шт`;
 
   return (
     <main className="max-w-5xl mx-auto p-6 md:p-10">
@@ -71,35 +124,47 @@ export default async function AdminPage({
         </div>
       ) : null}
 
+      {live.stale ? (
+        <div className="mb-6 rounded-xl bg-yellow-50 border border-yellow-300 p-4 text-sm">
+          <p className="font-semibold text-yellow-900">
+            Показаны кэшированные данные из последнего деплоя
+          </p>
+          <p className="mt-1 text-yellow-900">
+            Не удалось получить актуальный site.json из GitHub: {live.reason}.
+            Сохранять можно, но проверь, что увидишь после редеплоя.
+          </p>
+        </div>
+      ) : null}
+
       <section className="bg-background rounded-2xl border border-border p-6 md:p-8 mb-8">
         <h2 className="font-display text-xl font-bold mb-1">Контактная информация</h2>
         <p className="text-sm text-muted-foreground mb-6">
           Отображается в шапке, футере и блоке заявки.
         </p>
         <form action={saveContacts} className="grid sm:grid-cols-2 gap-4">
-          <Field name="phone" label="Телефон" defaultValue={CONTACTS.phone} />
-          <Field name="email" label="Email" type="email" defaultValue={CONTACTS.email} />
+          <Field name="phone" label="Телефон" defaultValue={contacts.phone} />
+          <Field name="email" label="Email" type="email" defaultValue={contacts.email} />
           <Field
             name="address"
             label="Адрес"
-            defaultValue={CONTACTS.address}
+            defaultValue={contacts.address}
             wide
           />
-          <Field name="hours" label="График" defaultValue={CONTACTS.hours} />
+          <Field name="hours" label="График" defaultValue={contacts.hours} />
           <Field
             name="telegram"
             label="Telegram URL"
-            defaultValue={CONTACTS.telegram}
+            defaultValue={contacts.telegram}
             placeholder="https://t.me/..."
           />
           <Field
             name="whatsapp"
             label="WhatsApp URL"
-            defaultValue={CONTACTS.whatsapp}
+            defaultValue={contacts.whatsapp}
             placeholder="https://wa.me/..."
           />
-          <Field name="company" label="Юр. лицо" defaultValue={CONTACTS.company} />
-          <Field name="inn" label="ИНН" defaultValue={CONTACTS.inn} />
+          <Field name="company" label="Юр. лицо" defaultValue={contacts.company} />
+          <Field name="inn" label="ИНН" defaultValue={contacts.inn} />
           <div className="sm:col-span-2">
             <SubmitBtn>Сохранить контакты</SubmitBtn>
           </div>
@@ -119,9 +184,9 @@ export default async function AdminPage({
               <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Ступень {TIERS.indexOf(t) + 1}
               </label>
-              <NumInput name={`min_${t}`} defaultValue={TIER_MIN[t]} />
+              <NumInput name={`min_${t}`} defaultValue={tierMins[t]} />
               <p className="text-xs text-muted-foreground">
-                сейчас: {tierLabelRu(t)}
+                сейчас: {tierLabel(t)}
               </p>
             </div>
           ))}
@@ -146,14 +211,14 @@ export default async function AdminPage({
                   <th className="px-2 py-2 font-semibold">«от» (карточка)</th>
                   {TIERS.map((t) => (
                     <th key={t} className="px-2 py-2 font-semibold">
-                      {tierLabelRu(t)}
+                      {tierLabel(t)}
                     </th>
                   ))}
                   <th className="px-2 py-2 font-semibold">Доступность</th>
                 </tr>
               </thead>
               <tbody>
-                {SIZES.map((s) => (
+                {products.map((s) => (
                   <tr key={s.id} className="border-t border-border">
                     <td className="px-2 py-2 font-display font-bold text-primary tabular-nums">
                       {s.volumeL} л
@@ -198,7 +263,7 @@ export default async function AdminPage({
           сохраню как WebP.
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {SIZES.map((s) => (
+          {products.map((s) => (
             <ImageSlot key={s.id} sizeId={s.id} volumeL={s.volumeL} image={s.image} />
           ))}
         </div>
