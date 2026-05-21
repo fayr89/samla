@@ -49,7 +49,7 @@ function verify(token: string): TokenPayload | null {
 }
 
 export function adminEmail(): string {
-  const e = process.env.ADMIN_EMAIL;
+  const e = process.env.ADMIN_EMAIL?.trim();
   if (!e) throw new Error('ADMIN_EMAIL env var missing.');
   return e.toLowerCase();
 }

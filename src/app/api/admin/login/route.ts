@@ -37,17 +37,23 @@ export async function POST(req: NextRequest) {
     }
     const email = emailRaw.trim().toLowerCase();
 
-    // Always pretend success to avoid email enumeration leaks
-    if (email !== adminEmail()) {
-      return redirectTo(req, '/admin/login', {sent: '1'});
+    const allowed = adminEmail();
+    if (email !== allowed) {
+      console.warn(
+        `[admin/login] email mismatch: got "${email}", expected "${allowed}"`
+      );
+      return redirectTo(req, '/admin/login', {
+        error: `Этот email не разрешён в админке. Разрешён только ${allowed}.`
+      });
     }
 
     const token = createMagicLinkToken(email);
     const link = `${origin(req)}/admin/verify?token=${encodeURIComponent(token)}`;
 
-    const resend = new Resend(process.env.RESEND_API_KEY!);
+    const from = process.env.EMAIL_FROM!.trim();
+    const resend = new Resend(process.env.RESEND_API_KEY!.trim());
     const result = await resend.emails.send({
-      from: process.env.EMAIL_FROM!,
+      from,
       to: email,
       subject: 'Вход в админку PROBOXы',
       text: `Откройте ссылку, чтобы войти (действует 15 минут):\n\n${link}\n\nЕсли не вы запрашивали — проигнорируйте это письмо.`,
@@ -63,11 +69,17 @@ export async function POST(req: NextRequest) {
       `
     });
     if (result.error) {
-      console.error('Resend error:', result.error);
+      console.error('[admin/login] Resend error:', result.error);
+      const err = result.error;
+      const name = err.name ? `${err.name}: ` : '';
       return redirectTo(req, '/admin/login', {
-        error: `Resend: ${result.error.message ?? 'не удалось отправить письмо'}`
+        error: `Resend ${name}${err.message ?? 'не удалось отправить письмо'}`
       });
     }
+
+    console.log(
+      `[admin/login] magic link sent to ${email} from ${from} (id=${result.data?.id ?? 'unknown'})`
+    );
 
     return redirectTo(req, '/admin/login', {sent: '1'});
   } catch (e) {
