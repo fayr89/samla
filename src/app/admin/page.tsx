@@ -1,16 +1,22 @@
 import Image from 'next/image';
 import {requireSession} from '@/lib/admin-auth';
 import {Input} from '@/components/ui/input';
-import {SIZES, CONTACTS, TIER_LABEL} from '@/lib/products';
-import {saveContacts, savePrices, uploadProductImage} from './actions';
+import {SIZES, CONTACTS, TIER_MIN, TIER_KEYS, tierLabelRu} from '@/lib/products';
+import {
+  saveContacts,
+  savePrices,
+  saveTierMins,
+  uploadProductImage
+} from './actions';
 
 export const metadata = {title: 'Admin · Управление', robots: {index: false}};
 
-const TIERS = ['t50', 't200', 't500', 't1000'] as const;
+const TIERS = TIER_KEYS;
 
 const OK_LABEL: Record<string, string> = {
   contacts: 'Контакты сохранены. Vercel передеплоит за 1–2 мин.',
-  prices: 'Цены сохранены. Vercel передеплоит за 1–2 мин.'
+  prices: 'Цены сохранены. Vercel передеплоит за 1–2 мин.',
+  tierMins: 'Пороги объёмов сохранены. Vercel передеплоит за 1–2 мин.'
 };
 
 function okMessage(key: string): string {
@@ -101,6 +107,31 @@ export default async function AdminPage({
       </section>
 
       <section className="bg-background rounded-2xl border border-border p-6 md:p-8 mb-8">
+        <h2 className="font-display text-xl font-bold mb-1">Пороги объёмов</h2>
+        <p className="text-sm text-muted-foreground mb-6">
+          С какого количества штук начинает действовать каждая ступень
+          оптовой цены. Подписи колонок в прайсе и в калькуляторе обновятся
+          автоматически. Значения должны идти по возрастанию.
+        </p>
+        <form action={saveTierMins} className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {TIERS.map((t) => (
+            <div key={t} className="space-y-1.5">
+              <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Ступень {TIERS.indexOf(t) + 1}
+              </label>
+              <NumInput name={`min_${t}`} defaultValue={TIER_MIN[t]} />
+              <p className="text-xs text-muted-foreground">
+                сейчас: {tierLabelRu(t)}
+              </p>
+            </div>
+          ))}
+          <div className="col-span-2 sm:col-span-4">
+            <SubmitBtn>Сохранить пороги</SubmitBtn>
+          </div>
+        </form>
+      </section>
+
+      <section className="bg-background rounded-2xl border border-border p-6 md:p-8 mb-8">
         <h2 className="font-display text-xl font-bold mb-1">Прайс по объёмам</h2>
         <p className="text-sm text-muted-foreground mb-6">
           Цены в рублях за штуку. «Доступность» меняет бейдж на карточке («В
@@ -115,7 +146,7 @@ export default async function AdminPage({
                   <th className="px-2 py-2 font-semibold">«от» (карточка)</th>
                   {TIERS.map((t) => (
                     <th key={t} className="px-2 py-2 font-semibold">
-                      {TIER_LABEL[t].ru}
+                      {tierLabelRu(t)}
                     </th>
                   ))}
                   <th className="px-2 py-2 font-semibold">Доступность</th>

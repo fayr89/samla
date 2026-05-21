@@ -171,7 +171,7 @@ export function Calculator() {
             <div className="mt-5 p-3 rounded-xl bg-muted">
               <div className="flex items-baseline justify-between mb-2">
                 <span className="text-xs font-semibold uppercase tracking-wider text-primary">
-                  {tierLocale(tier)}
+                  {tierLocale('template', {n: TIER_MIN[tier]})}
                 </span>
                 {nextTier && (
                   <span className="text-xs text-muted-foreground tabular-nums">

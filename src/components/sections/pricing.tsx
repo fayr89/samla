@@ -1,9 +1,9 @@
 import {useTranslations} from 'next-intl';
 import {FileDown, MessageCircle} from 'lucide-react';
 import {SectionHeader} from '@/components/ui/section-header';
-import {SIZES, TIER_PRICES, formatRub, type TierKey} from '@/lib/products';
+import {SIZES, TIER_PRICES, TIER_MIN, TIER_KEYS, formatRub} from '@/lib/products';
 
-const TIERS: TierKey[] = ['t50', 't200', 't500', 't1000'];
+const TIERS = TIER_KEYS;
 
 export function Pricing() {
   const t = useTranslations('pricing');
@@ -28,7 +28,7 @@ export function Pricing() {
                     key={tier}
                     className={`text-right font-semibold px-5 py-4 ${tier === 't1000' ? 'bg-accent/90' : ''}`}
                   >
-                    {tierLocale(tier)}
+                    {tierLocale('template', {n: TIER_MIN[tier]})}
                   </th>
                 ))}
                 <th className="text-right font-semibold px-5 py-4">{t('colCustom')}</th>
@@ -87,7 +87,9 @@ export function Pricing() {
                         tier === 't1000' ? 'font-semibold text-accent' : ''
                       }`}
                     >
-                      <span className="text-muted-foreground">{tierLocale(tier)}</span>
+                      <span className="text-muted-foreground">
+                        {tierLocale('template', {n: TIER_MIN[tier]})}
+                      </span>
                       <span className="tabular-nums">{formatRub(prices[tier])}</span>
                     </li>
                   ))}

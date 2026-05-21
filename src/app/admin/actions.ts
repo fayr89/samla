@@ -7,7 +7,7 @@ import {redirect} from 'next/navigation';
 import sharp from 'sharp';
 import {requireSession} from '@/lib/admin-auth';
 import {commitFile} from '@/lib/github-write';
-import type {TierKey} from '@/lib/products';
+import {TIER_KEYS, type TierKey} from '@/lib/products';
 
 const DATA_PATH = 'data/site.json';
 
@@ -34,6 +34,7 @@ function errUrl(msg: string): string {
 
 type SiteData = {
   contacts: Record<string, string>;
+  tierMins?: Record<TierKey, number>;
   products: Array<{
     id: string;
     volumeL: number;
@@ -89,6 +90,52 @@ export async function saveContacts(formData: FormData): Promise<void> {
       console.error('saveContacts crashed:', e);
       const msg = e instanceof Error ? e.message : 'неизвестная ошибка';
       target = errUrl(`Не удалось сохранить контакты: ${msg}`);
+    }
+  }
+  redirect(target);
+}
+
+export async function saveTierMins(formData: FormData): Promise<void> {
+  await requireSession();
+
+  let target: string;
+  const missing = missingEnv();
+  if (missing.length > 0) {
+    target = errUrl(
+      `Не заданы env-переменные на Vercel: ${missing.join(', ')}`
+    );
+  } else {
+    try {
+      const data = await loadSiteData();
+      const next: Partial<Record<TierKey, number>> = {};
+      for (const t of TIER_KEYS) {
+        const raw = formData.get(`min_${t}`);
+        if (typeof raw !== 'string' || raw.trim() === '') {
+          throw new Error(`порог для ${t} пустой`);
+        }
+        const n = parseInt(raw.replace(/\s/g, ''), 10);
+        if (!Number.isFinite(n) || n < 1) {
+          throw new Error(`порог для ${t} должен быть положительным числом`);
+        }
+        next[t] = n;
+      }
+      // Enforce strict ascending order so tierForQty() returns sensible results
+      const values = TIER_KEYS.map((t) => next[t]!);
+      for (let i = 1; i < values.length; i++) {
+        if (values[i] <= values[i - 1]) {
+          throw new Error(
+            `пороги должны идти по возрастанию: ${values.join(' → ')}`
+          );
+        }
+      }
+      data.tierMins = next as Record<TierKey, number>;
+      await commitFile(DATA_PATH, toJson(data), 'admin: update tier thresholds');
+      revalidatePath('/', 'layout');
+      target = okUrl('tierMins');
+    } catch (e) {
+      console.error('saveTierMins crashed:', e);
+      const msg = e instanceof Error ? e.message : 'неизвестная ошибка';
+      target = errUrl(`Не удалось сохранить пороги: ${msg}`);
     }
   }
   redirect(target);
