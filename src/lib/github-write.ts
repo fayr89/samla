@@ -1,8 +1,12 @@
 import {Octokit} from '@octokit/rest';
 
 function env(name: string): string {
-  const v = process.env[name];
-  if (!v) throw new Error(`${name} env var missing.`);
+  const raw = process.env[name];
+  if (!raw) throw new Error(`${name} env var missing.`);
+  // Strip whitespace that often sneaks in via copy-paste into Vercel UI
+  // (leading tabs from terminal copy, trailing newlines, etc).
+  const v = raw.trim();
+  if (!v) throw new Error(`${name} env var is empty after trimming whitespace.`);
   return v;
 }
 
