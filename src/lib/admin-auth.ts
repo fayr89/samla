@@ -25,7 +25,12 @@ function sign(payload: TokenPayload): string {
 function verify(token: string): TokenPayload | null {
   const [body, sig] = token.split('.');
   if (!body || !sig) return null;
-  const expected = createHmac('sha256', secret()).update(body).digest('base64url');
+  let expected: string;
+  try {
+    expected = createHmac('sha256', secret()).update(body).digest('base64url');
+  } catch {
+    return null;
+  }
   if (
     expected.length !== sig.length ||
     !timingSafeEqual(Buffer.from(expected), Buffer.from(sig))
@@ -59,7 +64,13 @@ export function createMagicLinkToken(email: string): string {
 export function consumeMagicLinkToken(token: string): string | null {
   const p = verify(token);
   if (!p) return null;
-  if (p.email !== adminEmail()) return null;
+  let allowed: string;
+  try {
+    allowed = adminEmail();
+  } catch {
+    return null;
+  }
+  if (p.email !== allowed) return null;
   return p.email;
 }
 
@@ -89,7 +100,13 @@ export async function getSession(): Promise<{email: string} | null> {
   if (!token) return null;
   const p = verify(token);
   if (!p) return null;
-  if (p.email !== adminEmail()) return null;
+  let allowed: string;
+  try {
+    allowed = adminEmail();
+  } catch {
+    return null;
+  }
+  if (p.email !== allowed) return null;
   return {email: p.email};
 }
 
