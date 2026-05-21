@@ -45,13 +45,22 @@ export const metadata: Metadata = {
     siteName: 'PROBOXы',
     title: 'PROBOXы — контейнеры SAMLA от IKEA оптом от 50 шт',
     description:
-      '7 размеров от 5 до 130 литров. Склад в РФ. Доставка по всей России и в Казахстан. Документы для юрлиц.'
+      '7 размеров от 5 до 130 литров. Склад в РФ. Доставка по всей России и в Казахстан. Документы для юрлиц.',
+    images: [
+      {
+        url: '/opengraph-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'PROBOXы — контейнеры SAMLA от IKEA оптом от 50 шт'
+      }
+    ]
   },
   twitter: {
     card: 'summary_large_image',
     title: 'PROBOXы — контейнеры SAMLA от IKEA оптом',
     description:
-      '7 размеров от 5 до 130 литров. Склад в РФ. Доставка по всей России и в Казахстан.'
+      '7 размеров от 5 до 130 литров. Склад в РФ. Доставка по всей России и в Казахстан.',
+    images: ['/opengraph-image.png']
   }
 };
 
