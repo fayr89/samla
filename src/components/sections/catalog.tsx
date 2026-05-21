@@ -1,5 +1,6 @@
+import Image from 'next/image';
 import {useTranslations, useLocale} from 'next-intl';
-import {ArrowRight, Package} from 'lucide-react';
+import {ArrowRight} from 'lucide-react';
 import {SectionHeader} from '@/components/ui/section-header';
 import {Badge} from '@/components/ui/badge';
 import {SIZES, formatRub} from '@/lib/products';
@@ -24,10 +25,13 @@ export function Catalog() {
               id={`size-${s.id}`}
               className="group flex flex-col bg-background rounded-[var(--radius-card)] border border-border overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-xl"
             >
-              <div className="relative aspect-square bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center overflow-hidden">
-                <Package
-                  className="w-24 h-24 text-slate-300 transition-transform duration-300 group-hover:scale-105"
-                  strokeWidth={1}
+              <div className="relative aspect-square bg-gradient-to-br from-slate-50 to-slate-100 overflow-hidden">
+                <Image
+                  src={s.image}
+                  alt={`SAMLA ${s.volumeL} л`}
+                  fill
+                  sizes="(min-width: 1280px) 300px, (min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                  className="object-contain transition-transform duration-300 group-hover:scale-105"
                 />
                 <div className="absolute top-3 left-3">
                   {s.stock === 'in' ? (

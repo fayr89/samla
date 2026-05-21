@@ -6,6 +6,7 @@ export type ProductSize = {
   use: {ru: string; kk: string};
   startPrice: number;
   stock: 'in' | 'order';
+  image: string;
 };
 
 export const SIZES: ProductSize[] = [
@@ -19,7 +20,8 @@ export const SIZES: ProductSize[] = [
       kk: 'Құжаттар, ұсақ фурнитура'
     },
     startPrice: 240,
-    stock: 'in'
+    stock: 'in',
+    image: '/products/samla-5l.webp'
   },
   {
     id: '11',
@@ -28,7 +30,8 @@ export const SIZES: ProductSize[] = [
     weightKg: 0.5,
     use: {ru: 'Канцелярия, текстиль', kk: 'Кеңсе тауарлары, тоқыма'},
     startPrice: 350,
-    stock: 'in'
+    stock: 'in',
+    image: '/products/samla-11l.webp'
   },
   {
     id: '22',
@@ -37,7 +40,8 @@ export const SIZES: ProductSize[] = [
     weightKg: 0.8,
     use: {ru: 'Игрушки, обувь', kk: 'Ойыншықтар, аяқ киім'},
     startPrice: 490,
-    stock: 'in'
+    stock: 'in',
+    image: '/products/samla-22l.webp'
   },
   {
     id: '45',
@@ -49,7 +53,8 @@ export const SIZES: ProductSize[] = [
       kk: 'Маусымдық заттар, құралдар'
     },
     startPrice: 690,
-    stock: 'in'
+    stock: 'in',
+    image: '/products/samla-45l.webp'
   },
   {
     id: '55',
@@ -58,7 +63,8 @@ export const SIZES: ProductSize[] = [
     weightKg: 1.6,
     use: {ru: 'Постельное бельё, одежда', kk: 'Төсек-орын, киім'},
     startPrice: 790,
-    stock: 'in'
+    stock: 'in',
+    image: '/products/samla-55l.webp'
   },
   {
     id: '65',
@@ -67,7 +73,8 @@ export const SIZES: ProductSize[] = [
     weightKg: 1.9,
     use: {ru: 'Архивы, склад товаров', kk: 'Мұрағат, тауар қоймасы'},
     startPrice: 890,
-    stock: 'order'
+    stock: 'order',
+    image: '/products/samla-65l.webp'
   },
   {
     id: '130',
@@ -76,7 +83,8 @@ export const SIZES: ProductSize[] = [
     weightKg: 3.5,
     use: {ru: 'Промышленное хранение', kk: 'Өнеркәсіптік сақтау'},
     startPrice: 1490,
-    stock: 'order'
+    stock: 'order',
+    image: '/products/samla-130l.webp'
   }
 ];
 

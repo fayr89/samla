@@ -1,8 +1,9 @@
 'use client';
 
+import Image from 'next/image';
 import {useMemo, useState} from 'react';
 import {useTranslations} from 'next-intl';
-import {Plus, Minus, Package, FileDown} from 'lucide-react';
+import {Plus, Minus, FileDown} from 'lucide-react';
 import {SectionHeader} from '@/components/ui/section-header';
 import {
   SIZES,
@@ -73,8 +74,14 @@ export function Calculator() {
                   key={s.id}
                   className="flex items-center gap-3 sm:gap-4 p-4 sm:p-5"
                 >
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-muted flex items-center justify-center shrink-0">
-                    <Package className="w-7 h-7 text-muted-foreground/60" strokeWidth={1.4} />
+                  <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-muted overflow-hidden shrink-0">
+                    <Image
+                      src={s.image}
+                      alt={`SAMLA ${s.volumeL} л`}
+                      fill
+                      sizes="56px"
+                      className="object-contain"
+                    />
                   </div>
 
                   <div className="flex-1 min-w-0">
