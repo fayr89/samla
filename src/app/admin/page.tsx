@@ -8,8 +8,26 @@ export const metadata = {title: 'Admin · Управление', robots: {index:
 
 const TIERS = ['t50', 't200', 't500', 't1000'] as const;
 
-export default async function AdminPage() {
+const OK_LABEL: Record<string, string> = {
+  contacts: 'Контакты сохранены. Vercel передеплоит за 1–2 мин.',
+  prices: 'Цены сохранены. Vercel передеплоит за 1–2 мин.'
+};
+
+function okMessage(key: string): string {
+  if (OK_LABEL[key]) return OK_LABEL[key];
+  if (key.startsWith('photo-')) {
+    return `Фото для ${key.slice(6)} л сохранено. Vercel передеплоит за 1–2 мин.`;
+  }
+  return 'Сохранено.';
+}
+
+export default async function AdminPage({
+  searchParams
+}: {
+  searchParams: Promise<{ok?: string; error?: string}>;
+}) {
   const {email} = await requireSession();
+  const sp = await searchParams;
 
   return (
     <main className="max-w-5xl mx-auto p-6 md:p-10">
@@ -34,6 +52,18 @@ export default async function AdminPage() {
           </button>
         </form>
       </header>
+
+      {sp.error ? (
+        <div className="mb-6 rounded-xl bg-destructive/10 border border-destructive/30 p-4 text-sm text-destructive">
+          <p className="font-semibold">Ошибка</p>
+          <p className="mt-1 text-foreground">{sp.error}</p>
+        </div>
+      ) : sp.ok ? (
+        <div className="mb-6 rounded-xl bg-success/10 border border-success/30 p-4 text-sm">
+          <p className="font-semibold text-success">Готово</p>
+          <p className="mt-1 text-foreground">{okMessage(sp.ok)}</p>
+        </div>
+      ) : null}
 
       <section className="bg-background rounded-2xl border border-border p-6 md:p-8 mb-8">
         <h2 className="font-display text-xl font-bold mb-1">Контактная информация</h2>
