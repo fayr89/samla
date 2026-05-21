@@ -1,12 +1,10 @@
 'use server';
 
-import {readFile} from 'fs/promises';
-import path from 'path';
 import {revalidatePath} from 'next/cache';
 import {redirect} from 'next/navigation';
 import sharp from 'sharp';
 import {requireSession} from '@/lib/admin-auth';
-import {commitFile} from '@/lib/github-write';
+import {commitFile, fetchTextFile} from '@/lib/github-write';
 import {TIER_KEYS, type TierKey} from '@/lib/products';
 
 const DATA_PATH = 'data/site.json';
@@ -49,8 +47,12 @@ type SiteData = {
 };
 
 async function loadSiteData(): Promise<SiteData> {
-  const buf = await readFile(path.join(process.cwd(), DATA_PATH), 'utf8');
-  return JSON.parse(buf);
+  // Read the freshest site.json straight from GitHub, not from the deployed
+  // serverless function's filesystem — the latter may be stale during the
+  // 1–2 min Vercel rebuild window after a previous save, which used to
+  // silently overwrite the previous commit's changes.
+  const text = await fetchTextFile(DATA_PATH);
+  return JSON.parse(text);
 }
 
 function toJson(data: SiteData): string {
