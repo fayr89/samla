@@ -4,6 +4,7 @@ import {useState} from 'react';
 import {useTranslations, useLocale} from 'next-intl';
 import {Link, usePathname} from '@/i18n/navigation';
 import {Menu, X, Phone} from 'lucide-react';
+import {CONTACTS} from '@/lib/products';
 
 const navItems = [
   {key: 'sizes', href: '#sizes'},
@@ -50,11 +51,11 @@ export function Header() {
 
         <div className="flex items-center gap-2 lg:gap-3">
           <a
-            href={`tel:${t('common.phone').replace(/[^+\d]/g, '')}`}
+            href={`tel:${CONTACTS.phone.replace(/[^+\d]/g, '')}`}
             className="hidden md:flex items-center gap-2 text-sm font-semibold text-slate-900 hover:text-[#0066ff]"
           >
             <Phone className="w-4 h-4" />
-            <span className="hidden xl:inline">{t('common.phone')}</span>
+            <span className="hidden xl:inline">{CONTACTS.phone}</span>
           </a>
 
           <div className="hidden sm:flex items-center rounded-lg bg-slate-100 p-0.5">
@@ -140,11 +141,11 @@ export function Header() {
               </Link>
             </div>
             <a
-              href={`tel:${t('common.phone').replace(/[^+\d]/g, '')}`}
+              href={`tel:${CONTACTS.phone.replace(/[^+\d]/g, '')}`}
               className="flex items-center justify-center gap-2 h-11 rounded-xl border border-slate-200 text-sm font-semibold"
             >
               <Phone className="w-4 h-4" />
-              {t('common.phone')}
+              {CONTACTS.phone}
             </a>
             <a
               href="#contacts"

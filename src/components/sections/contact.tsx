@@ -7,7 +7,7 @@ import {SectionHeader} from '@/components/ui/section-header';
 import {Input} from '@/components/ui/input';
 import {Select} from '@/components/ui/select';
 import {Textarea} from '@/components/ui/textarea';
-import {SIZES} from '@/lib/products';
+import {SIZES, CONTACTS} from '@/lib/products';
 
 const BENEFITS = ['calc', 'samples', 'special'] as const;
 const VOLUMES = ['v200', 'v500', 'v1000', 'v1000p', 'vIdk'] as const;
@@ -54,7 +54,7 @@ export function Contact() {
 
             <div className="mt-8 flex flex-wrap gap-3">
               <a
-                href="https://t.me/proboxy"
+                href={CONTACTS.telegram}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border bg-background hover:bg-muted transition text-sm font-semibold"
@@ -63,7 +63,7 @@ export function Contact() {
                 Telegram
               </a>
               <a
-                href="https://wa.me/79000000000"
+                href={CONTACTS.whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border bg-background hover:bg-muted transition text-sm font-semibold"

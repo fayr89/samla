@@ -1,8 +1,7 @@
-import {useTranslations} from 'next-intl';
 import {Mail, Phone, MapPin, Send, MessageCircle} from 'lucide-react';
+import {CONTACTS} from '@/lib/products';
 
 export function Footer() {
-  const t = useTranslations();
   const year = new Date().getFullYear();
 
   const catalog = [
@@ -48,28 +47,28 @@ export function Footer() {
             <ul className="space-y-2.5 text-sm">
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 mt-0.5 shrink-0 text-slate-500" />
-                <span>Москва, Подольск, склад «—»</span>
+                <span>{CONTACTS.address}</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <Phone className="w-4 h-4 mt-0.5 shrink-0 text-slate-500" />
                 <a
-                  href={`tel:${t('common.phone').replace(/[^+\d]/g, '')}`}
+                  href={`tel:${CONTACTS.phone.replace(/[^+\d]/g, '')}`}
                   className="hover:text-white font-semibold"
                 >
-                  {t('common.phone')}
+                  {CONTACTS.phone}
                 </a>
               </li>
               <li className="flex items-start gap-2.5">
                 <Mail className="w-4 h-4 mt-0.5 shrink-0 text-slate-500" />
                 <a
-                  href={`mailto:${t('common.email')}`}
+                  href={`mailto:${CONTACTS.email}`}
                   className="hover:text-white"
                 >
-                  {t('common.email')}
+                  {CONTACTS.email}
                 </a>
               </li>
             </ul>
-            <p className="text-xs text-slate-500 mt-4">Пн–Пт 9:00–19:00 МСК</p>
+            <p className="text-xs text-slate-500 mt-4">{CONTACTS.hours}</p>
           </div>
 
           <FooterColumn title="Каталог" items={catalog} />
@@ -80,21 +79,25 @@ export function Footer() {
         <div className="mt-12 pt-8 border-t border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-3">
             <a
-              href="#tg"
+              href={CONTACTS.telegram}
+              target="_blank"
+              rel="noopener noreferrer"
               className="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-800 hover:bg-[#0066ff] transition"
               aria-label="Telegram"
             >
               <Send className="w-4 h-4" />
             </a>
             <a
-              href="#wa"
+              href={CONTACTS.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
               className="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-800 hover:bg-[#0066ff] transition"
               aria-label="WhatsApp"
             >
               <MessageCircle className="w-4 h-4" />
             </a>
             <a
-              href={`mailto:${t('common.email')}`}
+              href={`mailto:${CONTACTS.email}`}
               className="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-800 hover:bg-[#0066ff] transition"
               aria-label="Email"
             >
