@@ -22,14 +22,27 @@ const inter = Inter({
   display: 'swap'
 });
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : 'https://samla-sooty.vercel.app');
+function resolveSiteUrl(): URL {
+  const candidates = [
+    process.env.NEXT_PUBLIC_SITE_URL,
+    process.env.VERCEL_PROJECT_PRODUCTION_URL,
+    process.env.VERCEL_URL,
+    'samla-sooty.vercel.app'
+  ];
+  for (const raw of candidates) {
+    if (!raw) continue;
+    const withProto = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+    try {
+      return new URL(withProto);
+    } catch {
+      continue;
+    }
+  }
+  return new URL('https://samla-sooty.vercel.app');
+}
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: resolveSiteUrl(),
   title: 'PROBOXы — контейнеры SAMLA от IKEA оптом',
   description:
     'Оптовая поставка контейнеров SAMLA от IKEA от 50 шт. 7 размеров от 5 до 130 литров. Склад в РФ. Доставка по России и в Казахстан.',
