@@ -1,4 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#0066ff"/>
-  <path d="M18 16h14.8c4.1 0 7.4 1.2 9.8 3.5 2.5 2.3 3.7 5.4 3.7 9.1 0 3.7-1.2 6.7-3.7 9-2.4 2.2-5.7 3.4-9.8 3.4H25.4V48H18V16zm14.5 18.4c2.1 0 3.7-.5 4.7-1.4 1.1-1 1.6-2.3 1.6-3.9s-.5-2.9-1.6-3.9c-1-1-2.6-1.5-4.7-1.5h-7.1v10.7h7.1z" fill="#fff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="32" height="32">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@800&amp;display=swap');
+      .text-p { font-family: 'Manrope', 'Segoe UI', Arial, sans-serif; font-weight: 800; font-size: 340px; fill: #FFFFFF; }
+    </style>
+  </defs>
+  <rect width="512" height="512" rx="102.4" fill="#0066FF" />
+  <text x="50%" y="48%" class="text-p" text-anchor="middle" dominant-baseline="central">P</text>
 </svg>
