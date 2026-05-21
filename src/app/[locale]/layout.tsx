@@ -22,7 +22,14 @@ const inter = Inter({
   display: 'swap'
 });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : 'https://samla-sooty.vercel.app');
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: 'PROBOXы — контейнеры SAMLA от IKEA оптом',
   description:
     'Оптовая поставка контейнеров SAMLA от IKEA от 50 шт. 7 размеров от 5 до 130 литров. Склад в РФ. Доставка по России и в Казахстан.',
@@ -32,7 +39,20 @@ export const metadata: Metadata = {
     'пластиковые ящики оптом',
     'B2B SAMLA',
     'PROBOXы'
-  ]
+  ],
+  openGraph: {
+    type: 'website',
+    siteName: 'PROBOXы',
+    title: 'PROBOXы — контейнеры SAMLA от IKEA оптом от 50 шт',
+    description:
+      '7 размеров от 5 до 130 литров. Склад в РФ. Доставка по всей России и в Казахстан. Документы для юрлиц.'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'PROBOXы — контейнеры SAMLA от IKEA оптом',
+    description:
+      '7 размеров от 5 до 130 литров. Склад в РФ. Доставка по всей России и в Казахстан.'
+  }
 };
 
 export function generateStaticParams() {
