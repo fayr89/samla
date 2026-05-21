@@ -22,6 +22,22 @@ function status(e: unknown): number | undefined {
   return (e as {status?: number}).status;
 }
 
+function tokenInfo(): string {
+  const t = process.env.GITHUB_TOKEN ?? '';
+  if (t.length === 0) return '<пусто>';
+  let kind = 'unknown';
+  if (t.startsWith('ghp_')) kind = 'classic ghp_';
+  else if (t.startsWith('github_pat_')) kind = 'fine-grained';
+  else if (t.startsWith('gho_')) kind = 'OAuth';
+  else if (t.startsWith('ghs_')) kind = 'app installation';
+  const trimmed = t.trim();
+  const ws =
+    trimmed.length === t.length
+      ? ''
+      : ` ⚠️ есть пробелы/переносы (с пробелами ${t.length}, без — ${trimmed.length})`;
+  return `${kind}, длина ${t.length}${ws}`;
+}
+
 async function getFileSha(
   o: Octokit,
   owner: string,
@@ -58,12 +74,12 @@ export async function commitFile(
   } catch (e) {
     if (status(e) === 404) {
       throw new Error(
-        `репо ${owner}/${r} недоступно. Проверь GITHUB_OWNER/GITHUB_REPO и что fine-grained PAT выбран на этот репо с правом Contents: Read and write`
+        `репо ${JSON.stringify(owner)}/${JSON.stringify(r)} недоступно. token=[${tokenInfo()}]. Если owner/repo в кавычках видно с пробелами — в Vercel env прокрались лишние символы. Если token=<пусто> или его длина выглядит странно (classic ≈ 40, fine-grained ≈ 80–95) — пересохрани GITHUB_TOKEN в Vercel и сделай Redeploy.`
       );
     }
     if (status(e) === 401) {
       throw new Error(
-        'GITHUB_TOKEN отвергнут GitHub (401). Токен истёк или скопирован неполностью — пересоздай fine-grained PAT'
+        `GITHUB_TOKEN отвергнут GitHub (401). token=[${tokenInfo()}]. Значение скопировано не полностью или с лишними символами — пересоздай токен и заново вставь в Vercel.`
       );
     }
     throw e;
@@ -74,7 +90,7 @@ export async function commitFile(
   } catch (e) {
     if (status(e) === 404) {
       throw new Error(
-        `ветка ${branch} не найдена в ${owner}/${r}. Проверь GITHUB_BRANCH`
+        `ветка ${JSON.stringify(branch)} не найдена в ${owner}/${r}. Нужно ${JSON.stringify('claude/product-landing-page-H9FDX')}`
       );
     }
     throw e;
