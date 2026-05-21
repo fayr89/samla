@@ -32,6 +32,11 @@ export default async function AdminLoginPage({
           </div>
         ) : (
           <form action="/api/admin/login" method="post" className="space-y-4">
+            {error ? (
+              <div className="rounded-xl bg-destructive/10 border border-destructive/30 p-3 text-sm text-destructive">
+                {error}
+              </div>
+            ) : null}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Email
@@ -45,9 +50,6 @@ export default async function AdminLoginPage({
                 autoFocus
               />
             </div>
-            {error ? (
-              <p className="text-sm text-destructive">{error}</p>
-            ) : null}
             <button
               type="submit"
               className="w-full h-12 rounded-xl bg-primary text-white font-semibold hover:bg-[#0052cc] transition"
