@@ -4,6 +4,8 @@ import {notFound} from 'next/navigation';
 import {setRequestLocale} from 'next-intl/server';
 import {Manrope, Inter} from 'next/font/google';
 import {routing} from '@/i18n/routing';
+import {Header} from '@/components/layout/header';
+import {Footer} from '@/components/layout/footer';
 import '../globals.css';
 
 const manrope = Manrope({
@@ -56,7 +58,11 @@ export default async function LocaleLayout({
       className={`${manrope.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider>
+          <Header />
+          <main className="flex-1 flex flex-col">{children}</main>
+          <Footer />
+        </NextIntlClientProvider>
       </body>
     </html>
   );

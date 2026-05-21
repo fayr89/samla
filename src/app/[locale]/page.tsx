@@ -1,6 +1,4 @@
-import {setRequestLocale} from 'next-intl/server';
-import {getTranslations} from 'next-intl/server';
-import {Link} from '@/i18n/navigation';
+import {setRequestLocale, getTranslations} from 'next-intl/server';
 
 export default async function HomePage({
   params
@@ -13,7 +11,7 @@ export default async function HomePage({
 
   const sections = [
     {id: 1, name: 'Design System', file: 'src/app/globals.css', done: true},
-    {id: 2, name: 'Header', file: 'src/components/layout/header.tsx'},
+    {id: 2, name: 'Header (заглушка)', file: 'src/components/layout/header.tsx', done: true},
     {id: 3, name: 'Hero', file: 'src/components/sections/hero.tsx'},
     {id: 4, name: 'Каталог 7 размеров', file: 'src/components/sections/catalog.tsx'},
     {id: 5, name: 'Кому подходит', file: 'src/components/sections/segments.tsx'},
@@ -23,11 +21,11 @@ export default async function HomePage({
     {id: 9, name: 'Доставка и оплата', file: 'src/components/sections/shipping.tsx'},
     {id: 10, name: 'FAQ', file: 'src/components/sections/faq.tsx'},
     {id: 11, name: 'CTA + форма', file: 'src/components/sections/contact.tsx'},
-    {id: 12, name: 'Footer', file: 'src/components/layout/footer.tsx'}
+    {id: 12, name: 'Footer (заглушка)', file: 'src/components/layout/footer.tsx', done: true}
   ];
 
   return (
-    <main className="flex-1 flex items-center justify-center px-6 py-20 bg-[radial-gradient(circle_at_top_right,_#F0F7FF,_transparent_60%)]">
+    <div className="flex-1 flex items-center justify-center px-6 py-20 bg-[radial-gradient(circle_at_top_right,_#F0F7FF,_transparent_60%)]">
       <div className="w-full max-w-3xl">
         <div className="flex items-center gap-3 mb-8">
           <span
@@ -82,32 +80,7 @@ export default async function HomePage({
           </ol>
         </div>
 
-        <div className="mt-8 flex flex-wrap items-center gap-3 text-sm text-slate-500">
-          <span>Текущий язык:</span>
-          <Link
-            href="/"
-            locale="ru"
-            className={`px-3 py-1.5 rounded-lg font-semibold ${
-              locale === 'ru'
-                ? 'bg-[#0066ff] text-white'
-                : 'bg-slate-100 hover:bg-slate-200'
-            }`}
-          >
-            RU
-          </Link>
-          <Link
-            href="/"
-            locale="kk"
-            className={`px-3 py-1.5 rounded-lg font-semibold ${
-              locale === 'kk'
-                ? 'bg-[#0066ff] text-white'
-                : 'bg-slate-100 hover:bg-slate-200'
-            }`}
-          >
-            KK
-          </Link>
-        </div>
       </div>
-    </main>
+    </div>
   );
 }
