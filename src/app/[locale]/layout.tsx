@@ -2,31 +2,23 @@ import type {Metadata} from 'next';
 import {NextIntlClientProvider, hasLocale} from 'next-intl';
 import {notFound} from 'next/navigation';
 import {setRequestLocale} from 'next-intl/server';
-import {Manrope, Inter, JetBrains_Mono} from 'next/font/google';
+import {Manrope, Inter} from 'next/font/google';
 import {routing} from '@/i18n/routing';
 import {Header} from '@/components/layout/header';
 import {Footer} from '@/components/layout/footer';
-import {Reveal} from '@/components/layout/reveal';
 import '../globals.css';
 
 const manrope = Manrope({
-  variable: '--font-display',
+  variable: '--font-manrope',
   subsets: ['latin', 'cyrillic'],
   weight: ['400', '500', '600', '700', '800'],
   display: 'swap'
 });
 
 const inter = Inter({
-  variable: '--font-body',
+  variable: '--font-inter',
   subsets: ['latin', 'cyrillic'],
   weight: ['400', '500', '600', '700'],
-  display: 'swap'
-});
-
-const jetbrains = JetBrains_Mono({
-  variable: '--font-mono',
-  subsets: ['latin', 'cyrillic'],
-  weight: ['400', '500', '700'],
   display: 'swap'
 });
 
@@ -105,11 +97,10 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale}
-      className={`${manrope.variable} ${inter.variable} ${jetbrains.variable} antialiased`}
+      className={`${manrope.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-screen flex flex-col">
+      <body className="min-h-full flex flex-col">
         <NextIntlClientProvider>
-          <Reveal />
           <Header />
           <main className="flex-1 flex flex-col">{children}</main>
           <Footer />
