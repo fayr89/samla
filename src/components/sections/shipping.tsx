@@ -1,70 +1,74 @@
 import {useTranslations} from 'next-intl';
-import {Truck, Wallet, Check} from 'lucide-react';
-import {SectionHeader} from '@/components/ui/section-header';
 
-const DELIVERY_KEYS = ['msk', 'rf', 'cis', 'pickup'] as const;
-const PAYMENT_KEYS = ['cashless', 'nds', 'deferred', 'docs'] as const;
-const REGIONS = ['МСК', 'СПб', 'ЕКБ', 'НСК', 'КЗН', 'АЛА', 'АСТ'];
-const BANKS = ['Сбербанк', 'Тинькофф Бизнес', 'Альфа-Банк'];
+const DELIVERY = ['msk', 'rf', 'cis', 'pickup'] as const;
+const PAYMENT = ['cashless', 'nds', 'deferred', 'docs'] as const;
 
 export function Shipping() {
   const t = useTranslations('shipping');
+  const delivery = useTranslations('shipping.delivery');
+  const payment = useTranslations('shipping.payment');
+  const tRoot = useTranslations();
+  const deliveryChips = tRoot.raw('shipping.deliveryChips') as string[];
+  const paymentChips = tRoot.raw('shipping.paymentChips') as string[];
 
   return (
-    <section id="shipping" className="py-16 md:py-24 px-4 sm:px-6 bg-background">
-      <div className="max-w-7xl mx-auto">
-        <SectionHeader eyebrow={t('eyebrow')} title={t('title')} />
+    <section id="shipping" className="py-[clamp(64px,8vw,116px)] relative">
+      <div className="max-w-[1280px] mx-auto px-[clamp(20px,5vw,64px)]">
+        <div className="reveal max-w-[760px]">
+          <span className="eyebrow">{t('eyebrow')}</span>
+          <h2 className="section-title">{t('title')}</h2>
+        </div>
 
-        <div className="mt-10 md:mt-14 grid md:grid-cols-2 gap-5 md:gap-6">
-          <div className="p-7 lg:p-8 bg-background rounded-[var(--radius-card)] border border-border">
-            <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-5">
-              <Truck className="w-7 h-7" />
-            </div>
-            <h3 className="font-display text-2xl font-bold mb-5">{t('deliveryTitle')}</h3>
-
-            <ul className="space-y-3 mb-6">
-              {DELIVERY_KEYS.map((k) => (
-                <li key={k} className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-success shrink-0 mt-0.5" />
-                  <span className="text-sm leading-relaxed">{t(`delivery.${k}`)}</span>
+        <div className="reveal mt-12 grid grid-cols-1 md:grid-cols-2 gap-px bg-[var(--color-line)] border border-[var(--color-line)] rounded-[4px] overflow-hidden">
+          <div className="bg-[var(--color-bg)] px-8 py-[34px]">
+            <h3 className="font-display text-[22px] font-bold flex items-center gap-3 mb-[22px]">
+              <span className="w-[10px] h-[10px] bg-[var(--color-signal)] rounded-full" />
+              {t('deliveryTitle')}
+            </h3>
+            <ul className="list-none flex flex-col gap-[14px]">
+              {DELIVERY.map((k) => (
+                <li
+                  key={k}
+                  className="flex gap-3 text-[15px] text-[var(--color-muted)] leading-[1.5] before:content-['→'] before:text-[var(--color-signal)] before:font-mono"
+                >
+                  {delivery(k)}
                 </li>
               ))}
             </ul>
-
-            <div className="flex flex-wrap gap-1.5">
-              {REGIONS.map((r) => (
+            <div className="flex flex-wrap gap-[7px] mt-6">
+              {deliveryChips.map((c) => (
                 <span
-                  key={r}
-                  className="text-xs font-semibold px-2 py-1 rounded-md bg-muted text-muted-foreground"
+                  key={c}
+                  className="font-mono text-[11px] tracking-[0.08em] px-[11px] py-[6px] border border-[var(--color-line-strong)] rounded-[2px] text-[var(--color-muted)]"
                 >
-                  {r}
+                  {c}
                 </span>
               ))}
             </div>
           </div>
 
-          <div className="p-7 lg:p-8 bg-background rounded-[var(--radius-card)] border border-border">
-            <div className="w-14 h-14 rounded-2xl bg-accent/10 text-accent flex items-center justify-center mb-5">
-              <Wallet className="w-7 h-7" />
-            </div>
-            <h3 className="font-display text-2xl font-bold mb-5">{t('paymentTitle')}</h3>
-
-            <ul className="space-y-3 mb-6">
-              {PAYMENT_KEYS.map((k) => (
-                <li key={k} className="flex items-start gap-3">
-                  <Check className="w-5 h-5 text-success shrink-0 mt-0.5" />
-                  <span className="text-sm leading-relaxed">{t(`payment.${k}`)}</span>
+          <div className="bg-[var(--color-bg)] px-8 py-[34px]">
+            <h3 className="font-display text-[22px] font-bold flex items-center gap-3 mb-[22px]">
+              <span className="w-[10px] h-[10px] bg-[var(--color-signal)] rounded-full" />
+              {t('paymentTitle')}
+            </h3>
+            <ul className="list-none flex flex-col gap-[14px]">
+              {PAYMENT.map((k) => (
+                <li
+                  key={k}
+                  className="flex gap-3 text-[15px] text-[var(--color-muted)] leading-[1.5] before:content-['→'] before:text-[var(--color-signal)] before:font-mono"
+                >
+                  {payment(k)}
                 </li>
               ))}
             </ul>
-
-            <div className="flex flex-wrap gap-2">
-              {BANKS.map((b) => (
+            <div className="flex flex-wrap gap-[7px] mt-6">
+              {paymentChips.map((c) => (
                 <span
-                  key={b}
-                  className="text-xs font-semibold px-3 py-1.5 rounded-md border border-border text-muted-foreground"
+                  key={c}
+                  className="font-mono text-[11px] tracking-[0.08em] px-[11px] py-[6px] border border-[var(--color-line-strong)] rounded-[2px] text-[var(--color-muted)]"
                 >
-                  {b}
+                  {c}
                 </span>
               ))}
             </div>

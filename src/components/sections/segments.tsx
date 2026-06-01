@@ -1,50 +1,40 @@
 import {useTranslations} from 'next-intl';
-import {
-  ShoppingBag,
-  PackageCheck,
-  UtensilsCrossed,
-  Archive,
-  Warehouse,
-  Store,
-  type LucideIcon
-} from 'lucide-react';
-import {SectionHeader} from '@/components/ui/section-header';
 
-const ITEMS: {key: string; Icon: LucideIcon}[] = [
-  {key: 'marketplace', Icon: ShoppingBag},
-  {key: 'fulfillment', Icon: PackageCheck},
-  {key: 'horeca', Icon: UtensilsCrossed},
-  {key: 'archive', Icon: Archive},
-  {key: 'industry', Icon: Warehouse},
-  {key: 'retail', Icon: Store}
-];
+const ITEMS = [
+  'marketplace',
+  'fulfillment',
+  'horeca',
+  'archive',
+  'industry',
+  'retail'
+] as const;
 
 export function Segments() {
-  const t = useTranslations('segments');
+  const t = useTranslations('audience');
+  const items = useTranslations('audience.items');
 
   return (
-    <section className="py-16 md:py-24 px-4 sm:px-6 bg-background">
-      <div className="max-w-7xl mx-auto">
-        <SectionHeader
-          eyebrow={t('eyebrow')}
-          title={t('title')}
-          description={t('subtitle')}
-        />
-
-        <div className="mt-10 md:mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-          {ITEMS.map(({key, Icon}) => (
+    <section id="audience" className="relative pt-0 pb-[clamp(64px,8vw,116px)]">
+      <div className="max-w-[1280px] mx-auto px-[clamp(20px,5vw,64px)]">
+        <div className="reveal max-w-[760px]">
+          <span className="eyebrow">{t('eyebrow')}</span>
+          <h2 className="section-title">{t('title')}</h2>
+          <p className="lede">{t('subtitle')}</p>
+        </div>
+        <div className="reveal mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[var(--color-line)] border border-[var(--color-line)] rounded-[4px] overflow-hidden">
+          {ITEMS.map((k, i) => (
             <div
-              key={key}
-              className="group p-6 lg:p-7 bg-background rounded-[var(--radius-card)] border border-border transition-all duration-200 hover:border-primary/30 hover:shadow-lg"
+              key={k}
+              className="group bg-[var(--color-bg)] px-[26px] py-[30px] relative overflow-hidden transition hover:bg-[var(--color-bg-2)] before:absolute before:left-0 before:top-0 before:w-[3px] before:h-0 before:bg-[var(--color-signal)] before:transition-all before:duration-[350ms] hover:before:h-full"
             >
-              <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-5 transition-all duration-200 group-hover:bg-primary group-hover:text-white">
-                <Icon className="w-7 h-7" />
+              <div className="font-mono text-[11px] text-[var(--color-signal)] tracking-[0.1em]">
+                {String(i + 1).padStart(2, '0')}
               </div>
-              <h3 className="font-display text-xl font-bold text-foreground mb-2 tracking-tight">
-                {t(`items.${key}.title`)}
+              <h3 className="font-display text-[21px] font-bold mt-[14px] mb-[9px]">
+                {items(`${k}.title`)}
               </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {t(`items.${key}.desc`)}
+              <p className="text-[var(--color-muted)] text-[14.5px] leading-[1.5]">
+                {items(`${k}.desc`)}
               </p>
             </div>
           ))}

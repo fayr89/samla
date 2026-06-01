@@ -2,197 +2,159 @@
 
 import {useState} from 'react';
 import {useTranslations} from 'next-intl';
-import {Check, Send, MessageCircle} from 'lucide-react';
-import {SectionHeader} from '@/components/ui/section-header';
-import {Input} from '@/components/ui/input';
-import {Select} from '@/components/ui/select';
-import {Textarea} from '@/components/ui/textarea';
+import {ArrowRight} from 'lucide-react';
 import {SIZES, CONTACTS} from '@/lib/products';
 
-const BENEFITS = ['calc', 'samples', 'special'] as const;
 const VOLUMES = ['v200', 'v500', 'v1000', 'v1000p', 'vIdk'] as const;
 
 export function Contact() {
   const t = useTranslations('contact');
-  const [sizes, setSizes] = useState<string[]>([]);
-  const [submitted, setSubmitted] = useState(false);
-
-  const toggleSize = (id: string) => {
-    setSizes((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setSubmitted(true);
-  };
+  const tRoot = useTranslations();
+  const benefits = tRoot.raw('contact.benefits') as string[];
+  const [picked, setPicked] = useState<Set<string>>(new Set());
 
   return (
     <section
       id="contacts"
-      className="py-16 md:py-24 px-4 sm:px-6 bg-gradient-to-b from-background to-[#F0F7FF]"
+      className="bg-[var(--color-bg-2)] border-t border-[var(--color-line)] py-[clamp(64px,8vw,116px)]"
     >
-      <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-start">
-          <div>
-            <SectionHeader
-              eyebrow={t('eyebrow')}
-              title={t('title')}
-              description={t('subtitle')}
-              align="left"
-            />
-
-            <ul className="mt-8 space-y-3">
-              {BENEFITS.map((b) => (
-                <li key={b} className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-success/10 text-success flex items-center justify-center shrink-0">
-                    <Check className="w-4 h-4" />
-                  </span>
-                  <span className="text-base">{t(`benefits.${b}`)}</span>
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a
-                href={CONTACTS.telegram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border bg-background hover:bg-muted transition text-sm font-semibold"
+      <div className="max-w-[1280px] mx-auto px-[clamp(20px,5vw,64px)] grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-[clamp(32px,5vw,72px)] items-start">
+        <div className="reveal">
+          <span className="eyebrow">{t('eyebrow')}</span>
+          <h2 className="section-title">
+            {t('titleA')}
+            <br />
+            {t('titleB')}
+          </h2>
+          <p className="lede">{t('subtitle')}</p>
+          <ul className="list-none mt-7 flex flex-col gap-[14px]">
+            {benefits.map((b) => (
+              <li
+                key={b}
+                className="flex gap-3 text-[15.5px] text-[var(--color-muted)] before:content-['✓'] before:text-[var(--color-signal)] before:font-bold"
               >
-                <Send className="w-4 h-4 text-primary" />
-                Telegram
-              </a>
-              <a
-                href={CONTACTS.whatsapp}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border bg-background hover:bg-muted transition text-sm font-semibold"
-              >
-                <MessageCircle className="w-4 h-4 text-success" />
-                WhatsApp
-              </a>
-            </div>
-          </div>
-
-          <div className="bg-background rounded-[var(--radius-card)] border border-border shadow-lg p-6 sm:p-8">
-            <h3 className="font-display text-xl font-bold mb-6">{t('formTitle')}</h3>
-
-            {submitted ? (
-              <div className="text-center py-8">
-                <div className="w-16 h-16 mx-auto rounded-full bg-success/10 text-success flex items-center justify-center mb-4">
-                  <Check className="w-8 h-8" />
-                </div>
-                <h4 className="font-display text-xl font-bold mb-2">
-                  {t('thanksTitle')}
-                </h4>
-                <p className="text-sm text-muted-foreground">{t('thanksDesc')}</p>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                      {t('name')}
-                    </label>
-                    <Input required name="name" placeholder={t('namePh')} />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                      {t('company')}
-                    </label>
-                    <Input required name="company" placeholder={t('companyPh')} />
-                  </div>
-                </div>
-
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                      {t('phone')}
-                    </label>
-                    <Input
-                      required
-                      type="tel"
-                      name="phone"
-                      placeholder="+7 (___) ___-__-__"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                      Email
-                    </label>
-                    <Input
-                      required
-                      type="email"
-                      name="email"
-                      placeholder="name@company.ru"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    {t('volume')}
-                  </label>
-                  <Select required name="volume" defaultValue="">
-                    <option value="" disabled>
-                      {t('volumePh')}
-                    </option>
-                    {VOLUMES.map((v) => (
-                      <option key={v} value={v}>
-                        {t(`volumes.${v}`)}
-                      </option>
-                    ))}
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    {t('sizes')}
-                  </label>
-                  <div className="flex flex-wrap gap-2">
-                    {SIZES.map((s) => {
-                      const active = sizes.includes(s.id);
-                      return (
-                        <button
-                          key={s.id}
-                          type="button"
-                          onClick={() => toggleSize(s.id)}
-                          aria-pressed={active}
-                          className={`px-3 py-1.5 rounded-full text-sm font-semibold border transition tabular-nums ${
-                            active
-                              ? 'bg-primary text-white border-primary'
-                              : 'bg-background text-muted-foreground border-border hover:border-primary/40'
-                          }`}
-                        >
-                          {s.volumeL} л
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    {t('comment')}
-                  </label>
-                  <Textarea name="comment" placeholder={t('commentPh')} rows={3} />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full h-12 rounded-xl bg-primary text-white font-semibold shadow-[0_8px_24px_-6px_rgba(0,102,255,0.55)] hover:bg-[#0052cc] transition"
-                >
-                  {t('submit')}
-                </button>
-
-                <p className="text-xs text-muted-foreground text-center leading-relaxed">
-                  {t('policy')}
-                </p>
-              </form>
-            )}
+                {b}
+              </li>
+            ))}
+          </ul>
+          <div className="flex gap-3 mt-8">
+            <a href={CONTACTS.telegram} className="btn btn-ghost flex-1 justify-center">
+              {t('telegram')}
+            </a>
+            <a href={CONTACTS.whatsapp} className="btn btn-ghost flex-1 justify-center">
+              {t('whatsapp')}
+            </a>
           </div>
         </div>
+
+        <form
+          className="reveal border border-[var(--color-line-strong)] rounded-[6px] bg-[var(--color-bg)] p-[clamp(24px,3vw,38px)]"
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <h3 className="font-display text-[23px] font-bold mb-6">{t('formTitle')}</h3>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Field label={t('name')} placeholder={t('namePh')} type="text" />
+            <Field label={t('company')} placeholder={t('companyPh')} type="text" />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+            <Field label={t('phone')} placeholder={t('phonePh')} type="tel" />
+            <Field label={t('email')} placeholder={t('emailPh')} type="email" />
+          </div>
+
+          <FormBlock label={t('volume')}>
+            <select className="w-full bg-[var(--color-bg-3)] border border-[var(--color-line)] rounded-[3px] text-[var(--color-fg)] px-[14px] py-[13px] text-[15px] focus:outline-none focus:border-[var(--color-signal)] focus:bg-[var(--color-bg-2)]">
+              <option>{t('volumePh')}</option>
+              {VOLUMES.map((v) => (
+                <option key={v}>{t(`volumes.${v}`)}</option>
+              ))}
+            </select>
+          </FormBlock>
+
+          <FormBlock label={t('sizes')}>
+            <div className="flex flex-wrap gap-2">
+              {SIZES.map((s) => {
+                const id = String(s.volumeL);
+                const active = picked.has(id);
+                return (
+                  <label
+                    key={id}
+                    className={`inline-flex items-center gap-[6px] font-mono text-[13px] border rounded-[2px] px-3 py-2 cursor-pointer transition ${
+                      active
+                        ? 'bg-[var(--color-signal)] text-[var(--color-signal-ink)] border-[var(--color-signal)] font-bold'
+                        : 'border-[var(--color-line-strong)] text-[var(--color-muted)]'
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      className="hidden"
+                      checked={active}
+                      onChange={() => {
+                        setPicked((prev) => {
+                          const next = new Set(prev);
+                          if (next.has(id)) next.delete(id);
+                          else next.add(id);
+                          return next;
+                        });
+                      }}
+                    />
+                    {s.volumeL} л
+                  </label>
+                );
+              })}
+            </div>
+          </FormBlock>
+
+          <FormBlock label={t('comment')}>
+            <textarea
+              placeholder={t('commentPh')}
+              rows={3}
+              className="w-full resize-y min-h-[84px] bg-[var(--color-bg-3)] border border-[var(--color-line)] rounded-[3px] text-[var(--color-fg)] px-[14px] py-[13px] text-[15px] focus:outline-none focus:border-[var(--color-signal)] focus:bg-[var(--color-bg-2)]"
+            />
+          </FormBlock>
+
+          <button type="submit" className="btn btn-primary w-full justify-center mt-2">
+            {t('submit')}
+            <ArrowRight aria-hidden />
+          </button>
+          <p className="font-mono text-[10.5px] text-[var(--color-muted-2)] text-center mt-[14px] leading-[1.5]">
+            {t('policy')}
+          </p>
+        </form>
       </div>
     </section>
+  );
+}
+
+function Field({
+  label,
+  placeholder,
+  type
+}: {
+  label: string;
+  placeholder: string;
+  type: string;
+}) {
+  return (
+    <FormBlock label={label}>
+      <input
+        type={type}
+        placeholder={placeholder}
+        className="w-full bg-[var(--color-bg-3)] border border-[var(--color-line)] rounded-[3px] text-[var(--color-fg)] px-[14px] py-[13px] text-[15px] focus:outline-none focus:border-[var(--color-signal)] focus:bg-[var(--color-bg-2)]"
+      />
+    </FormBlock>
+  );
+}
+
+function FormBlock({label, children}: {label: string; children: React.ReactNode}) {
+  return (
+    <div className="mt-4">
+      <label className="block font-mono text-[11px] tracking-[0.08em] uppercase text-[var(--color-muted)] mb-[7px]">
+        {label}
+      </label>
+      {children}
+    </div>
   );
 }
