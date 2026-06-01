@@ -1,58 +1,34 @@
 import {useTranslations} from 'next-intl';
-import {
-  Warehouse,
-  FileText,
-  Truck,
-  ShieldCheck,
-  type LucideIcon
-} from 'lucide-react';
-import {SectionHeader} from '@/components/ui/section-header';
 
-const ITEMS: {key: string; Icon: LucideIcon}[] = [
-  {key: 'warehouse', Icon: Warehouse},
-  {key: 'docs', Icon: FileText},
-  {key: 'delivery', Icon: Truck},
-  {key: 'original', Icon: ShieldCheck}
-];
+const KEYS = ['warehouse', 'docs', 'delivery', 'original'] as const;
 
 export function Advantages() {
-  const t = useTranslations('advantages');
+  const t = useTranslations('why');
+  const items = useTranslations('why.items');
 
   return (
-    <section className="py-16 md:py-24 px-4 sm:px-6 bg-muted">
-      <div className="max-w-7xl mx-auto">
-        <SectionHeader
-          eyebrow={t('eyebrow')}
-          title={t('title')}
-          align="left"
-        />
-
-        <div className="mt-10 md:mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {ITEMS.map(({key, Icon}, idx) => (
-            <article
-              key={key}
-              className="relative h-full p-7 bg-background rounded-[var(--radius-card)] border border-border overflow-hidden"
-            >
-              <span
-                className="absolute -top-2 -left-1 font-display text-7xl lg:text-8xl font-extrabold leading-none select-none pointer-events-none"
-                style={{
-                  WebkitTextStroke: '1.5px rgba(15,23,42,0.08)',
-                  color: 'transparent'
-                }}
-              >
-                0{idx + 1}
-              </span>
-              <Icon className="absolute top-7 right-7 w-7 h-7 text-primary" />
-
-              <div className="relative pt-12">
-                <h3 className="font-display text-xl font-bold text-foreground mb-2 tracking-tight">
-                  {t(`items.${key}.title`)}
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {t(`items.${key}.desc`)}
-                </p>
+    <section
+      id="about"
+      className="bg-[var(--color-bg-2)] border-y border-[var(--color-line)] py-[clamp(64px,8vw,116px)]"
+    >
+      <div className="max-w-[1280px] mx-auto px-[clamp(20px,5vw,64px)]">
+        <div className="reveal max-w-[760px]">
+          <span className="eyebrow">{t('eyebrow')}</span>
+          <h2 className="section-title">{t('title')}</h2>
+        </div>
+        <div className="mt-[52px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10">
+          {KEYS.map((k, i) => (
+            <div key={k} className="reveal">
+              <div className="font-mono text-[13px] text-[var(--color-signal)] font-bold tracking-[0.1em]">
+                {String(i + 1).padStart(2, '0')}
               </div>
-            </article>
+              <h3 className="font-display text-[20px] font-bold mt-[18px] mb-3 pt-[18px] border-t border-[var(--color-line-strong)]">
+                {items(`${k}.title`)}
+              </h3>
+              <p className="text-[var(--color-muted)] text-[14.5px] leading-[1.55]">
+                {items(`${k}.desc`)}
+              </p>
+            </div>
           ))}
         </div>
       </div>

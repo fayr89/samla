@@ -1,142 +1,130 @@
-import {Mail, Phone, MapPin, Send, MessageCircle} from 'lucide-react';
-import {CONTACTS} from '@/lib/products';
+import {useTranslations} from 'next-intl';
+import {Link} from '@/i18n/navigation';
+import {CONTACTS, SIZES} from '@/lib/products';
+
+const COMPANY_LINKS = [
+  {key: 'About', href: '#about'},
+  {key: 'Shipping', href: '#shipping'},
+  {key: 'Payment', href: '#shipping'}
+] as const;
+
+const BUSINESS_LINKS = [
+  {key: 'Price', href: '#contacts'},
+  {key: 'Contract', href: '#contacts'},
+  {key: 'Requisites', href: '#contacts'},
+  {key: 'Dealer', href: '#contacts'}
+] as const;
 
 export function Footer() {
+  const t = useTranslations('footer');
+  const tCommon = useTranslations('common');
+  const tNav = useTranslations('nav');
+  const telHref = `tel:${CONTACTS.phone.replace(/[^+\d]/g, '')}`;
   const year = new Date().getFullYear();
 
-  const catalog = [
-    {label: '5 л', href: '#size-5'},
-    {label: '11 л', href: '#size-11'},
-    {label: '22 л', href: '#size-22'},
-    {label: '45 л', href: '#size-45'},
-    {label: '55 л', href: '#size-55'},
-    {label: '65 л', href: '#size-65'},
-    {label: '130 л', href: '#size-130'}
-  ];
-
-  const company = [
-    {label: 'О нас', href: '#about'},
-    {label: 'Доставка', href: '#shipping'},
-    {label: 'Оплата', href: '#payment'},
-    {label: 'FAQ', href: '#faq'},
-    {label: 'Контакты', href: '#contacts'}
-  ];
-
-  const business = [
-    {label: 'Прайс-лист (PDF)', href: '#price-pdf'},
-    {label: 'Договор-оферта', href: '#offer'},
-    {label: 'Реквизиты', href: '#requisites'},
-    {label: 'Стать дилером', href: '#dealer'}
-  ];
-
   return (
-    <footer className="bg-[#0b1220] text-slate-300 mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14 lg:py-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
+    <footer className="border-t border-[var(--color-line)] pt-14 pb-7">
+      <div className="max-w-[1280px] mx-auto px-[clamp(20px,5vw,64px)]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr] gap-10">
           <div>
-            <div
-              className="text-2xl font-extrabold tracking-tight mb-3"
-              style={{fontFamily: 'var(--font-manrope)'}}
-            >
-              <span className="text-[#3a86ff]">PROBOX</span>
-              <span className="text-white">ы</span>
-            </div>
-            <p className="text-sm text-slate-400 mb-5 leading-relaxed">
-              Оптовая поставка контейнеров SAMLA от IKEA. Склад в РФ, отгрузка от 1 дня.
+            <Link href="/" className="flex flex-col leading-none">
+              <span className="font-display font-extrabold text-[20px] tracking-[-0.02em]">
+                {tCommon('brand')}
+              </span>
+              <span className="font-mono text-[9.5px] tracking-[0.16em] uppercase text-[var(--color-muted)] mt-[3px]">
+                {tCommon('tagline')}
+              </span>
+            </Link>
+            <p className="text-[var(--color-muted)] text-sm leading-[1.6] my-4 max-w-[34ch]">
+              {t('about')}
             </p>
-            <ul className="space-y-2.5 text-sm">
-              <li className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 mt-0.5 shrink-0 text-slate-500" />
-                <span>{CONTACTS.address}</span>
+            <ul className="list-none flex flex-col gap-2 font-mono text-[13px] text-[var(--color-muted)]">
+              <li>{CONTACTS.address}</li>
+              <li>
+                <a href={telHref}>{CONTACTS.phone}</a>
               </li>
-              <li className="flex items-start gap-2.5">
-                <Phone className="w-4 h-4 mt-0.5 shrink-0 text-slate-500" />
-                <a
-                  href={`tel:${CONTACTS.phone.replace(/[^+\d]/g, '')}`}
-                  className="hover:text-white font-semibold"
-                >
-                  {CONTACTS.phone}
+              <li>
+                <a href={`mailto:${CONTACTS.email}`}>{CONTACTS.email}</a>
+              </li>
+            </ul>
+            <p className="font-mono text-[11px] text-[var(--color-muted-2)] mt-[14px] tracking-[0.06em]">
+              {t('hours')}
+            </p>
+          </div>
+
+          <FooterCol title={t('catalogTitle')}>
+            <ul className="list-none flex flex-col gap-[9px]">
+              {SIZES.map((s) => (
+                <li key={s.id}>
+                  <a href="#sizes" className="text-sm text-[var(--color-muted)] hover:text-[var(--color-fg)] transition">
+                    {s.volumeL} л
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </FooterCol>
+
+          <FooterCol title={t('companyTitle')}>
+            <ul className="list-none flex flex-col gap-[9px]">
+              {COMPANY_LINKS.map((l) => (
+                <li key={l.key}>
+                  <a href={l.href} className="text-sm text-[var(--color-muted)] hover:text-[var(--color-fg)] transition">
+                    {t(`company${l.key}`)}
+                  </a>
+                </li>
+              ))}
+              <li>
+                <a href="#faq" className="text-sm text-[var(--color-muted)] hover:text-[var(--color-fg)] transition">
+                  {tNav('faq')}
                 </a>
               </li>
-              <li className="flex items-start gap-2.5">
-                <Mail className="w-4 h-4 mt-0.5 shrink-0 text-slate-500" />
-                <a
-                  href={`mailto:${CONTACTS.email}`}
-                  className="hover:text-white"
-                >
-                  {CONTACTS.email}
+              <li>
+                <a href="#contacts" className="text-sm text-[var(--color-muted)] hover:text-[var(--color-fg)] transition">
+                  {tNav('contacts')}
                 </a>
               </li>
             </ul>
-            <p className="text-xs text-slate-500 mt-4">{CONTACTS.hours}</p>
-          </div>
+          </FooterCol>
 
-          <FooterColumn title="Каталог" items={catalog} />
-          <FooterColumn title="Компания" items={company} />
-          <FooterColumn title="Для бизнеса" items={business} />
+          <FooterCol title={t('businessTitle')}>
+            <ul className="list-none flex flex-col gap-[9px]">
+              {BUSINESS_LINKS.map((l) => (
+                <li key={l.key}>
+                  <a href={l.href} className="text-sm text-[var(--color-muted)] hover:text-[var(--color-fg)] transition">
+                    {t(`business${l.key}`)}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </FooterCol>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <a
-              href={CONTACTS.telegram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-800 hover:bg-[#0066ff] transition"
-              aria-label="Telegram"
-            >
-              <Send className="w-4 h-4" />
+        <div className="flex flex-wrap justify-between items-center gap-4 mt-12 pt-6 border-t border-[var(--color-line)] font-mono text-[11.5px] text-[var(--color-muted-2)]">
+          <span>{t('rights', {year})}</span>
+          <div className="flex gap-[18px]">
+            <a href={CONTACTS.telegram} className="hover:text-[var(--color-signal)]">
+              Telegram
             </a>
-            <a
-              href={CONTACTS.whatsapp}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-800 hover:bg-[#0066ff] transition"
-              aria-label="WhatsApp"
-            >
-              <MessageCircle className="w-4 h-4" />
+            <a href={CONTACTS.whatsapp} className="hover:text-[var(--color-signal)]">
+              WhatsApp
             </a>
-            <a
-              href={`mailto:${CONTACTS.email}`}
-              className="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-800 hover:bg-[#0066ff] transition"
-              aria-label="Email"
-            >
-              <Mail className="w-4 h-4" />
+            <a href={`mailto:${CONTACTS.email}`} className="hover:text-[var(--color-signal)]">
+              Email
             </a>
           </div>
-          <p className="text-xs text-slate-500">
-            © {year} PROBOXы. Все права защищены.
-          </p>
         </div>
       </div>
     </footer>
   );
 }
 
-function FooterColumn({
-  title,
-  items
-}: {
-  title: string;
-  items: {label: string; href: string}[];
-}) {
+function FooterCol({title, children}: {title: string; children: React.ReactNode}) {
   return (
     <div>
-      <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
+      <h4 className="font-mono text-[11px] tracking-[0.12em] uppercase text-[var(--color-signal)] mb-4">
         {title}
-      </h3>
-      <ul className="space-y-2.5">
-        {items.map((it) => (
-          <li key={it.label}>
-            <a
-              href={it.href}
-              className="text-sm text-slate-400 hover:text-white transition"
-            >
-              {it.label}
-            </a>
-          </li>
-        ))}
-      </ul>
+      </h4>
+      {children}
     </div>
   );
 }

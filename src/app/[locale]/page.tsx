@@ -1,5 +1,6 @@
 import {setRequestLocale} from 'next-intl/server';
 import {Hero} from '@/components/sections/hero';
+import {Marquee} from '@/components/sections/marquee';
 import {Catalog} from '@/components/sections/catalog';
 import {Segments} from '@/components/sections/segments';
 import {Advantages} from '@/components/sections/advantages';
@@ -20,6 +21,7 @@ export default async function HomePage({
   return (
     <>
       <Hero />
+      <Marquee />
       <Catalog />
       <Segments />
       <Advantages />
